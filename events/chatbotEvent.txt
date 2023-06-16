@@ -1,0 +1,24 @@
+const client = require("../index");
+const { MessageEmbed, Collection } = require("discord.js")
+const chat = require("node-fetch")
+const model = require("../models/chatchannel")
+
+client.on("messageCreate", async (message) => {
+    if(!message.guild || message.author.bot) return;
+let x = encodeURI(message.content);
+
+  model.findOne({ Guild: message.guild.id }, async (err, data) => {
+
+    if (!data) return;
+
+    if (message.channel.id != data.Channel) return;
+
+    if (message.content == "") x = "your%20content";
+
+    let data2 = await chat(`https://api.popcat.xyz/chatbot?msg=${x}&owner=Insidious&botname=Asura`);
+
+    let json = await data2.json();
+
+    return message.channel.send({ content: `${json.response}` });
+    })
+});
